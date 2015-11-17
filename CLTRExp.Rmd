@@ -5,7 +5,40 @@ date: "November 13, 2015"
 output: pdf_document
 ---
 
+# Overview
+Through a simulation, the Central Limit Theory will be demonstrated.  The mean and variance of the exponential distribution will be simulated and compared to calculated values.
+
+# Simulations
+During the simulation, lambda will be set to a controlled 0.2.  
 
 ```{r}
-
+lambda <- 0.2
+nosims <- 1000
+means <- NULL
+rexpValues <- NULL
+n <- 40
+rexpValues <- rexp(n = nosims, rate = lambda)
+#for (i in 1:nosims) rexpValues <- c(rexpValues,rexp(n = n, rate = lambda))
 ```
+
+# Sample mean versus Theoretical mean
+The mean of an exponential distribution is 1/lambda.  This theoretical mean can be calculated easily and compared with the actual collected sample mean.  
+
+```{r}
+calcMean <- 1/lambda
+n40CLTMean <- mean(sample(rexpValues, n, replace = FALSE))
+n100CLTMean <- mean(sample(rexpValues, 100, replace = FALSE))
+simMean <- mean(rexpValues)
+```
+
+The calculated mean is `r calcMean`.
+
+The mean according to Central Limit Theory with a sample size of `r n` should be near `r n40CLTMean`.  With a sample size of 100, the mean should be near `r n100CLTMean`.  The larger sample size will help the mean approach the actual mean of the simulated values.
+
+The actual mean of the simulated values is `r simMean`.
+
+# Sample variance versus Theoretical variance
+Similar to the mean, the standard deviation of an exponential distribution is 1/lambda.  This theoretical mean can be calculated easily and compared with the actual collected sample mean.  
+
+
+# Distribution
