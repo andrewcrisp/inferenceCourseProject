@@ -2,7 +2,7 @@
 title: "Central Limit Theory and the Exponential Distribution"
 author: "Andrew Crisp"
 date: "November 13, 2015"
-output: pdf_document
+output: html_document
 ---
 
 # Overview
@@ -14,10 +14,12 @@ During the simulation, lambda will be set to a controlled 0.2.
 ```{r}
 lambda <- 0.2
 nosims <- 1000
-means <- NULL
-rexpValues <- NULL
 n <- 40
-rexpValues <- rexp(n = nosims, rate = lambda)
+rexpValues <- NULL
+means <- NULL
+for (i in 1:nosims) rexpValues <- rbind(rexpValues,rexp(n = n, rate = lambda))
+for (i in 1:nosims) means <- rbind(means, mean(rexpValues[i,]))
+means <- as.numeric(means)
 #for (i in 1:nosims) rexpValues <- c(rexpValues,rexp(n = n, rate = lambda))
 ```
 
@@ -26,19 +28,65 @@ The mean of an exponential distribution is 1/lambda.  This theoretical mean can 
 
 ```{r}
 calcMean <- 1/lambda
-n40CLTMean <- mean(sample(rexpValues, n, replace = FALSE))
-n100CLTMean <- mean(sample(rexpValues, 100, replace = FALSE))
 simMean <- mean(rexpValues)
+CLTMean <- mean(means)
+#n <- 40
+#n40CollectionOfMeans <- NULL
+#n40CLTMean <- mean(sample(rexpValues, n, replace = FALSE))
+#for (i in 1:nosims) n40CollectionOfMeans <- c(n40CollectionOfMeans, mean(sample(rexpValues, n, replace = FALSE)))
+#n <- 100
+#n100CollectionOfMeans <- NULL
+#for (i in 1:nosims) n100CollectionOfMeans <- c(n100CollectionOfMeans, mean(sample(rexpValues, n, replace = FALSE)))
+#n100CLTMean <- mean(sample(rexpValues, n, replace = FALSE))
 ```
 
 The calculated mean is `r calcMean`.
 
-The mean according to Central Limit Theory with a sample size of `r n` should be near `r n40CLTMean`.  With a sample size of 100, the mean should be near `r n100CLTMean`.  The larger sample size will help the mean approach the actual mean of the simulated values.
+The Central Limit Theory says that the mean of the a sample should approximate the mean of the population.  The mean of all 1000 means simulated is `r CLTMean`.
 
-The actual mean of the simulated values is `r simMean`.
+The actual mean of all the simulated values is `r simMean`.
+
+```{r}
+hist40Mean <- hist(means)
+xfit <- seq(min(means),max(means))
+yfit <- dnorm(xfit, mean=mean(means), sd = sd(means))
+yfit <- yfit * diff(hist40Mean$mids[1:2]*length(means))
+plot(hist40Mean)
+lines(xfit,yfit)
+abline(v=mean(means), lwd=2)
+```
 
 # Sample variance versus Theoretical variance
-Similar to the mean, the standard deviation of an exponential distribution is 1/lambda.  This theoretical mean can be calculated easily and compared with the actual collected sample mean.  
+Similar to the mean, the standard deviation of an exponential distribution is 1/lambda.  The variance is the square of the standard deviation.  
 
+```{r}
+calcVariance <- (1/lambda)^2
+n <- 40
+n40CLTVariance <- var(sample(rexpValues, n, replace = FALSE))
+n40CollectionOfVariances <- NULL
+for (i in 1:nosims) n40CollectionOfVariances <- c(n40CollectionOfVariances, var(sample(rexpValues, n, replace = FALSE)))
+n <- 100
+n100CollectionOfVariances <- NULL
+for (i in 1:nosims) n100CollectionOfVariances <- c(n100CollectionOfVariances, var(sample(rexpValues, n, replace = FALSE)))
+n100CLTVariance <- var(sample(rexpValues, n, replace = FALSE))
+simVariance <-var(rexpValues)
+```
+
+The calculated variance is `r calcVariance`.
+
+The variance with a sample size of 40 is `r n40CLTVariance`.  With 100 sample size, `r n100CLTVariance`.
+
+The actual population variance of the simulated values is `r simVariance`.
+
+```{r}
+hist40Variance <- hist(n40CollectionOfVariances)
+xfit <- seq(min(n40CollectionOfVariances),max(n40CollectionOfVariances))
+yfit <- dnorm(xfit, mean=mean(n40CollectionOfVariances), sd = sd(n40CollectionOfVariances))
+yfit <- yfit * diff(hist40Variance$mids[1:2]*length(n40CollectionOfVariances))
+plot(hist40Variance)
+lines(xfit,yfit)
+abline(v=mean(n40CollectionOfVariances), lwd=2)
+```
 
 # Distribution
+
