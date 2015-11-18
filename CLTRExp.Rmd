@@ -2,7 +2,7 @@
 title: "Central Limit Theory and the Exponential Distribution"
 author: "Andrew Crisp"
 date: "November 13, 2015"
-output: pdf_document
+output: html_document
 ---
 
 # Overview
@@ -12,6 +12,7 @@ Through a simulation, the Central Limit Theory will be demonstrated.  The mean a
 During the simulation, lambda will be set to a controlled 0.2.  
 
 ```{r}
+require(ggplot2)
 lambda <- 0.2
 nosims <- 1000
 n <- 40
@@ -38,13 +39,20 @@ The Central Limit Theory says that the mean of the a sample should approximate t
 The actual mean of all the simulated values is `r simMean`.
 
 ```{r}
-hist40Mean <- hist(means)
-xfit <- seq(min(means),max(means))
-yfit <- dnorm(xfit, mean=mean(means), sd = sd(means))
-yfit <- yfit * diff(hist40Mean$mids[1:2]*length(means))
-plot(hist40Mean)
-lines(xfit,yfit)
-abline(v=mean(means), lwd=2)
+#hist40Mean <- hist(means)
+#fit <- seq(min(means),max(means))
+#yfit <- dnorm(xfit, mean=mean(means), sd = sd(means))
+#yfit <- yfit * diff(hist40Mean$mids[1:2]*length(means))
+#plot(hist40Mean)
+#lines(xfit,yfit)
+#abline(v=mean(means), lwd=2)
+ggplot() +
+  aes(means) + 
+  geom_histogram(aes(y = ..density..), binwidth=.25, alpha=.2) + 
+  # geom_density(color="blue") + 
+  geom_vline(xintercept=mean(means)) +
+  stat_function(geom="line", fun=dnorm, arg=list(mean=mean(means),sd=sd(means)))
+
 ```
 
 # Sample variance versus Theoretical variance
@@ -63,13 +71,19 @@ The calculated (theoretical) variance is `r calcVariance`.
 The average variance of the simulations is `r simVariance`.
 
 ```{r}
-hist40Variance <- hist(n40CollectionOfVariances)
-xfit <- seq(min(n40CollectionOfVariances),max(n40CollectionOfVariances))
-yfit <- dnorm(xfit, mean=mean(n40CollectionOfVariances), sd = sd(n40CollectionOfVariances))
-yfit <- yfit * diff(hist40Variance$mids[1:2]*length(n40CollectionOfVariances))
-plot(hist40Variance)
-lines(xfit,yfit)
-abline(v=mean(n40CollectionOfVariances), lwd=2)
+#hist40Variance <- hist(n40CollectionOfVariances)
+#xfit <- seq(min(n40CollectionOfVariances),max(n40CollectionOfVariances))
+#yfit <- dnorm(xfit, mean=mean(n40CollectionOfVariances), sd = sd(n40CollectionOfVariances))
+#yfit <- yfit * diff(hist40Variance$mids[1:2]*length(n40CollectionOfVariances))
+#plot(hist40Variance)
+#lines(xfit,yfit)
+#abline(v=mean(n40CollectionOfVariances), lwd=2)
+ggplot() +
+  aes(n40CollectionOfVariances) + 
+  geom_histogram(aes(y = ..density..), alpha=.2) + 
+  # geom_density(color="blue") + 
+  geom_vline(xintercept=mean(n40CollectionOfVariances)) +
+  stat_function(geom="line", fun=dnorm, arg=list(mean=mean(n40CollectionOfVariances),sd=sd(n40CollectionOfVariances)))
 ```
 
 # Distribution
