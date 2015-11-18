@@ -2,7 +2,7 @@
 title: "Central Limit Theory and the Exponential Distribution"
 author: "Andrew Crisp"
 date: "November 13, 2015"
-output: html_document
+output: pdf_document
 ---
 
 # Overview
@@ -20,7 +20,6 @@ means <- NULL
 for (i in 1:nosims) rexpValues <- rbind(rexpValues,rexp(n = n, rate = lambda))
 for (i in 1:nosims) means <- rbind(means, mean(rexpValues[i,]))
 means <- as.numeric(means)
-#for (i in 1:nosims) rexpValues <- c(rexpValues,rexp(n = n, rate = lambda))
 ```
 
 # Sample mean versus Theoretical mean
@@ -30,14 +29,6 @@ The mean of an exponential distribution is 1/lambda.  This theoretical mean can 
 calcMean <- 1/lambda
 simMean <- mean(rexpValues)
 CLTMean <- mean(means)
-#n <- 40
-#n40CollectionOfMeans <- NULL
-#n40CLTMean <- mean(sample(rexpValues, n, replace = FALSE))
-#for (i in 1:nosims) n40CollectionOfMeans <- c(n40CollectionOfMeans, mean(sample(rexpValues, n, replace = FALSE)))
-#n <- 100
-#n100CollectionOfMeans <- NULL
-#for (i in 1:nosims) n100CollectionOfMeans <- c(n100CollectionOfMeans, mean(sample(rexpValues, n, replace = FALSE)))
-#n100CLTMean <- mean(sample(rexpValues, n, replace = FALSE))
 ```
 
 The calculated mean is `r calcMean`.
@@ -62,21 +53,14 @@ Similar to the mean, the standard deviation of an exponential distribution is 1/
 ```{r}
 calcVariance <- (1/lambda)^2
 n <- 40
-n40CLTVariance <- var(sample(rexpValues, n, replace = FALSE))
 n40CollectionOfVariances <- NULL
-for (i in 1:nosims) n40CollectionOfVariances <- c(n40CollectionOfVariances, var(sample(rexpValues, n, replace = FALSE)))
-n <- 100
-n100CollectionOfVariances <- NULL
-for (i in 1:nosims) n100CollectionOfVariances <- c(n100CollectionOfVariances, var(sample(rexpValues, n, replace = FALSE)))
-n100CLTVariance <- var(sample(rexpValues, n, replace = FALSE))
-simVariance <-var(rexpValues)
+for (i in 1:nosims) n40CollectionOfVariances <- rbind(n40CollectionOfVariances, var(rexpValues[i,]))
+simVariance <-mean(n40CollectionOfVariances)
 ```
 
-The calculated variance is `r calcVariance`.
+The calculated (theoretical) variance is `r calcVariance`.
 
-The variance with a sample size of 40 is `r n40CLTVariance`.  With 100 sample size, `r n100CLTVariance`.
-
-The actual population variance of the simulated values is `r simVariance`.
+The average variance of the simulations is `r simVariance`.
 
 ```{r}
 hist40Variance <- hist(n40CollectionOfVariances)
