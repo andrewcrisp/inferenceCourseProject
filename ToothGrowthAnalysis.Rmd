@@ -1,0 +1,28 @@
+---
+title: "Tooth Growth Analysis"
+author: "Andrew Crisp"
+date: "November 18, 2015"
+output: pdf_document
+---
+
+# Load the data
+```{r}
+library(datasets)
+library(ggplot2)
+```
+
+The ToothGrowth dataset is packaged with the R download.  This dataset shows the effect of vitamin C on tooth growth in guinea pigs.  
+
+# Initial exploration
+
+Before evaluating the data, an initial familiarization of the information is necessary.
+
+```{r}
+str(ToothGrowth)
+summary(ToothGrowth)
+```
+The structure shows three variables.  Further, the dose looks like it has only a few discrete values.  The assumption can be made that this is a factor.
+
+```{r}
+ToothGrowth$dose <- factor(ToothGrowth$dose)
+```
