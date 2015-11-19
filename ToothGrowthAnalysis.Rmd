@@ -2,16 +2,17 @@
 title: "Tooth Growth Analysis"
 author: "Andrew Crisp"
 date: "November 18, 2015"
-output: pdf_document
+output: html_document
 ---
 
 # Load the data
-```{r}
+```{r message=FALSE}
 library(datasets)
 library(ggplot2)
+library(dplyr)
 ```
 
-The ToothGrowth dataset is packaged with the R download.  This dataset shows the effect of vitamin C on tooth growth in guinea pigs.  
+The ToothGrowth dataset is packaged with the R download.  This dataset shows the effect of vitamin C on tooth growth in guinea pigs.  The vitamin C is delivered either through orange juice or ascorbic acid.  
 
 # Initial exploration
 
@@ -21,8 +22,13 @@ Before evaluating the data, an initial familiarization of the information is nec
 str(ToothGrowth)
 summary(ToothGrowth)
 ```
-The structure shows three variables.  Further, the dose looks like it has only a few discrete values.  The assumption can be made that this is a factor.
+The structure shows three variables.  Further, the dose looks like it has only a few discrete values.  The assumption can be made that this is a factor.  After converting to a factor, a cursory glance suggests that orange juice encourages more growth than ascorbic acid, at least in the smaller doses.
 
 ```{r}
 ToothGrowth$dose <- factor(ToothGrowth$dose)
+ToothGrowth %>% tbl_df %>% group_by(supp,dose) %>% summarise_each(funs(mean))
+ggplot(ToothGrowth, aes(x=supp, y=len, group=dose, color=dose)) + geom_line() + geom_point()
+
 ```
+
+# Growth by treatment
