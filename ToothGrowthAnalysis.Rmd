@@ -2,11 +2,11 @@
 title: "Tooth Growth Analysis"
 author: "Andrew Crisp"
 date: "November 18, 2015"
-output: html_document
+output: pdf_document
 ---
 
 # Load the data
-```{r message=FALSE}
+```{r message=FALSE,warning=FALSE}
 library(datasets)
 library(ggplot2)
 library(dplyr)
@@ -27,7 +27,10 @@ The structure shows three variables.  Further, the dose looks like it has only a
 ```{r}
 ToothGrowth$dose <- factor(ToothGrowth$dose)
 ToothGrowth %>% tbl_df %>% group_by(dose,supp) %>% summarise_each(funs(mean))
-ggplot(ToothGrowth, aes(x=rev(supp), y=len, color=dose)) + geom_boxplot()
+ggplot(ToothGrowth, aes(x=rev(supp), y=len, color=dose)) + 
+  geom_boxplot() + 
+  xlab("Delivery method") + 
+  ylab("Length")
 
 ```
 
@@ -53,3 +56,18 @@ t.test(filter(ToothGrowth,supp=='OJ',dose==2)$len,filter(ToothGrowth,supp=='VC',
 ```
 
 At dose size 2.0, the .95 confidence interval shows the real difference in the mean about -3.798 - 3.638.  Accordingly, it cannot be said that there is a difference in tooth growth between the two delivery methods at the 2.0 dose level.
+
+# Conclusions
+
+## Assumptions
+
+First, some assumptions must be made.  This is necessary because the data comes without much in the way of description.  There is no code book or description of methods in the expiriment.
+1. Dose sizes are in a standard unit of measure.  Since everything should be internally relevant, this could be in milliliters, ounces, gallons, or any other unit of volume.  The specific unit isn't really important, just that they are consistent within the dataset.
+2. "VC" is the delivery method acerbic acid.  This isn't much of an assumption.  The information comes from http://www.inside-r.org/r-doc/datasets/ToothGrowth
+3. The expiriment follows some standardized measurement rules.  Specifically, the length measurements are all taken at a relevant time and that doses were given at similarly relevant times.  For example, the dosage could have been a daily amount and the length measurement taken at thirty days after birth.  Again, the specific values are not important, just that they are consistent within the expiriment.  It does no good measuring the orange juice group at five days and the acerbic acid group at fifty.  The information would not be related.
+
+## Findings
+
+Vitamin C appears to affect tooth growth in guinea pigs.  Those treated with acerbic acid show a greater growth than those given orange juice.  However, the effect reaches a plateau.  At some point between one and two units of either orange juice or acerbic acid, the growth evens out and neither test group shows a higher growth rate.  
+
+Because of the positive relationship between dose size and length, vitamin C appears to enhance tooth growth in the population.  The plateau previously mentioned, however, suggests that there is an upper limit to the effect.  

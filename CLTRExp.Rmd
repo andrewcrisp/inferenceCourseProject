@@ -37,14 +37,22 @@ The Central Limit Theory says that the mean of the a sample should approximate t
 
 The actual mean of all the simulated values is `r simMean`.
 
-```{r}
+```{r message=FALSE,warning=FALSE}
 require(ggplot2)
+```
+```{r}
 ggplot() +
   aes(means) + 
   geom_histogram(aes(y = ..density..), binwidth=.25, alpha=.2) + 
   geom_vline(xintercept=mean(means)) +
-  stat_function(geom="line", fun=dnorm, arg=list(mean=mean(means),sd=sd(means)))
+  stat_function(geom="line",
+                fun=dnorm, 
+                arg=list(mean=mean(means),sd=sd(means))) +
+  xlab("Means of the samples") +
+  ylab("Density")
 ```
+
+The average of all the means is demonstrated to be at `r mean(means)` and that the distribution of all the averages is approximately normal.  
 
 # Sample variance versus Theoretical variance
 Similar to the mean, the standard deviation of an exponential distribution is 1/lambda.  The variance is the square of the standard deviation.  However, the variance of the samples should approach that of a normal distribution.  
@@ -64,12 +72,32 @@ The average variance of the simulations is `r simVariance`.
 ```{r}
 ggplot() +
   aes(n40CollectionOfVariances) + 
-  geom_histogram(aes(y = ..density..), alpha=.8, binwidth=1) + 
+  geom_histogram(aes(y = ..density..), alpha=.8, binwidth=5) + 
   geom_vline(xintercept=mean(n40CollectionOfVariances)) +
-  stat_function(geom="line", fun=dnorm, arg=list(mean=mean(n40CollectionOfVariances),sd=sd(n40CollectionOfVariances))) + 
-  geom_histogram(aes(rexpValues[,1],y = ..density..), alpha=.2, binwidth=1) + 
-  stat_function(geom="line", fun=dexp,arg=list(rate=lambda))
+  stat_function(geom="line", 
+                fun=dnorm, 
+                arg=list(mean=mean(n40CollectionOfVariances),sd=sd(n40CollectionOfVariances))) + 
+  xlab("Variances of the samples") + 
+  ylab("Density")
 ```
+
+The average variance from the samples is approaching the calculated variance of the exponential distribution of 1/lambda, `r calcVariance`.
 
 # Distribution
 
+```{r}
+ggplot() + 
+  aes(as.numeric(rexpValues)) + 
+  geom_histogram(binwidth=1, aes(y=..density..)) + 
+  geom_vline(xintercept=calcMean, color='blue', labels="Mean") + 
+  geom_vline(xintercept=calcVariance, color='green', labels="Variance") +
+  geom_vline(xintercept=sqrt(calcVariance),
+             color='green', 
+             linetype='dashed', 
+             labels="Standard Deviation") + 
+  stat_function(geom="line", fun=dexp,arg=list(rate=lambda),color='red') +
+  xlab("Sample values") +
+  ylab("Frequency")
+```
+
+The exponential distribution can be seen to not be anywhere near a normal distribution.  The central limit theorum, though, is useful in identifying the marked values, mean, standard deviation, and variance.  By sampling the distribution and examining the samples, the desired descriptive values emerge.  It is demonstrated that the average of sample means is approximately the population mean.  Similarly, the average of sample variances is approximately the population variance.  The distribution of the population proves to not influence this behaviour
